@@ -1,0 +1,27 @@
+{
+  "name": "ai-rebuild-log-kit",
+  "version": "0.1.0",
+  "description": "A small local-first toolkit for turning debt recovery and AI rebuilding logs into publishable notes and post drafts.",
+  "type": "module",
+  "bin": {
+    "ai-rebuild-log": "./src/cli.js"
+  },
+  "scripts": {
+    "start": "node src/cli.js",
+    "demo": "node src/cli.js demo",
+    "test": "node --test"
+  },
+  "keywords": [
+    "ai",
+    "personal-finance",
+    "recovery",
+    "templates",
+    "social-posts",
+    "oss"
+  ],
+  "author": "haibokusha53",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  }
+}
