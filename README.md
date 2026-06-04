@@ -28,12 +28,14 @@ The first use case is simple:
 ```bash
 npm install
 npm run demo
+npm start -- guardrails
 ```
 
 Or run directly:
 
 ```bash
 node src/cli.js demo
+node src/cli.js guardrails
 ```
 
 ## Example
@@ -45,10 +47,10 @@ node src/cli.js post --topic "AI subscription cost" --lesson "Decide what the to
 Output:
 
 ```text
-AIに課金して分かったこと。
+AI subscription cost、やって分かったこと。
 
-便利だった、で終わると普通に趣味費。
-何を減らすか、何を作るか、どこで回収するかまで決めてやっと再建費になる。
+勢いだけで始めると、普通に散らかります。
+Decide what the tool must save or produce before paying。
 
 派手に勝つ前に、同じミスで負けない仕組みを作ります。
 ```
@@ -57,10 +59,13 @@ AIに課金して分かったこと。
 
 ```bash
 node src/cli.js demo
+node src/cli.js guardrails
 node src/cli.js log
 node src/cli.js post --topic "..." --lesson "..."
 node src/cli.js note --topic "..." --lesson "..."
 ```
+
+`guardrails` prints the safety constraints by themselves so they can be reviewed or reused in another local workflow.
 
 ## Project Principles
 

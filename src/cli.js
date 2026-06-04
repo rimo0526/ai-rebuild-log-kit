@@ -27,6 +27,7 @@ function printHelp() {
     "",
     "Usage:",
     "  node src/cli.js demo",
+    "  node src/cli.js guardrails",
     "  node src/cli.js log",
     "  node src/cli.js post --topic \"...\" --lesson \"...\"",
     "  node src/cli.js note --topic \"...\" --lesson \"...\"",
@@ -51,6 +52,11 @@ function run() {
       lesson: "何を減らすか、何を作るか、どこで回収するかまで決める"
     }));
     console.log("\n## Guardrails\n");
+    console.log(guardrails.map((item) => `- ${item}`).join("\n"));
+    return;
+  }
+
+  if (command === "guardrails") {
     console.log(guardrails.map((item) => `- ${item}`).join("\n"));
     return;
   }
