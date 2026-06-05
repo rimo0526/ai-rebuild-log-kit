@@ -5,12 +5,12 @@ import { dailyLogTemplate, guardrails, noteOutlineTemplate, xPostTemplate } from
 test("xPostTemplate includes topic, lesson, and human tone", () => {
   const draft = xPostTemplate({
     topic: "AIに課金して",
-    lesson: "先に回収方法を決める"
+    lesson: "先に用途を決める"
   });
 
   assert.match(draft, /AIに課金して/);
-  assert.match(draft, /先に回収方法を決める/);
-  assert.match(draft, /同じミスで負けない/);
+  assert.match(draft, /先に用途を決める/);
+  assert.match(draft, /小さく続けられる仕組み/);
 });
 
 test("dailyLogTemplate provides rebuilding fields", () => {
@@ -23,11 +23,11 @@ test("dailyLogTemplate provides rebuilding fields", () => {
 
 test("noteOutlineTemplate produces a reusable outline", () => {
   const outline = noteOutlineTemplate({
-    topic: "家計再建",
+    topic: "家計の見直し",
     lesson: "固定費から見る"
   });
 
-  assert.match(outline, /家計再建/);
+  assert.match(outline, /家計の見直し/);
   assert.match(outline, /固定費から見る/);
   assert.match(outline, /次に試すこと/);
 });

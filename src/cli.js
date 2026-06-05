@@ -48,8 +48,8 @@ function run() {
   if (command === "demo") {
     console.log("## X Post Draft\n");
     console.log(xPostTemplate({
-      topic: "AIに課金して",
-      lesson: "何を減らすか、何を作るか、どこで回収するかまで決める"
+      topic: "AIへの課金",
+      lesson: "何を減らすかより、どこで成果が出るかまで決める"
     }));
     console.log("\n## Guardrails\n");
     console.log(guardrails.map((item) => `- ${item}`).join("\n"));
