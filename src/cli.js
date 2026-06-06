@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import packageJson from "../package.json" with { type: "json" };
 import { dailyLogTemplate, guardrails, noteOutlineTemplate, xPostTemplate } from "./templates.js";
 
 function parseArgs(argv) {
@@ -31,6 +32,7 @@ function printHelp() {
     "  node src/cli.js log",
     "  node src/cli.js post --topic \"...\" --lesson \"...\"",
     "  node src/cli.js note --topic \"...\" --lesson \"...\"",
+    "  node src/cli.js version",
     "",
     "This tool generates drafts only. Review before publishing."
   ].join("\n"));
@@ -42,6 +44,11 @@ function run() {
 
   if (command === "help" || args.help) {
     printHelp();
+    return;
+  }
+
+  if (command === "version" || args.version) {
+    console.log(packageJson.version);
     return;
   }
 

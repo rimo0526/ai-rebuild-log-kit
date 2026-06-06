@@ -15,6 +15,7 @@ test("help output documents the guardrails command", async () => {
   const { stdout } = await runCli("help");
 
   assert.match(stdout, /node src\/cli\.js guardrails/);
+  assert.match(stdout, /node src\/cli\.js version/);
   assert.match(stdout, /Review before publishing/);
 });
 
@@ -24,4 +25,10 @@ test("guardrails command prints every guardrail", async () => {
   assert.match(stdout, /Do not invent income, product results, or approval status\./);
   assert.match(stdout, /Do not use get-rich-quick framing\./);
   assert.match(stdout, /Keep the final draft reviewable by a human\./);
+});
+
+test("version command prints the package version", async () => {
+  const { stdout } = await runCli("version");
+
+  assert.equal(stdout.trim(), "0.1.0");
 });
