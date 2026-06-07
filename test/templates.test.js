@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { dailyLogTemplate, guardrails, noteOutlineTemplate, xPostTemplate } from "../src/templates.js";
+import { dailyLogTemplate, guardrails, noteOutlineTemplate, reviewDraft, xPostTemplate } from "../src/templates.js";
 
 test("xPostTemplate includes topic, lesson, and human tone", () => {
   const draft = xPostTemplate({
@@ -35,4 +35,20 @@ test("noteOutlineTemplate produces a reusable outline", () => {
 test("guardrails discourage unsafe growth claims", () => {
   assert.ok(guardrails.some((item) => item.includes("Do not invent income")));
   assert.ok(guardrails.some((item) => item.includes("get-rich-quick")));
+});
+
+test("reviewDraft flags obvious risky claims", () => {
+  const review = reviewDraft("I earned instant passive income after one post.");
+
+  assert.equal(review.status, "WARN");
+  assert.match(review.summary, /warning/);
+  assert.ok(review.warnings.some((warning) => warning.id === "income-claims"));
+  assert.ok(review.warnings.some((warning) => warning.id === "get-rich-quick"));
+});
+
+test("reviewDraft passes a concrete non-hyped draft", () => {
+  const review = reviewDraft("I wrote down one spending lesson and kept the claim small.");
+
+  assert.equal(review.status, "PASS");
+  assert.equal(review.warnings.length, 0);
 });

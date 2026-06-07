@@ -15,6 +15,7 @@ test("help output documents the guardrails command", async () => {
   const { stdout } = await runCli("help");
 
   assert.match(stdout, /node src\/cli\.js guardrails/);
+  assert.match(stdout, /node src\/cli\.js review --text/);
   assert.match(stdout, /node src\/cli\.js version/);
   assert.match(stdout, /Review before publishing/);
 });
@@ -31,4 +32,24 @@ test("version command prints the package version", async () => {
   const { stdout } = await runCli("version");
 
   assert.equal(stdout.trim(), "0.1.0");
+});
+
+test("review command warns on obvious risky draft text", async () => {
+  const { stdout } = await runCli("review", "--text", "This earned instant passive income.");
+
+  assert.match(stdout, /Status: WARN/);
+  assert.match(stdout, /Avoid invented income or results claims/);
+  assert.match(stdout, /Avoid get-rich-quick framing/);
+});
+
+test("review command fails cleanly when text is missing", async () => {
+  await assert.rejects(
+    runCli("review"),
+    (error) => {
+      assert.equal(error.code, 1);
+      assert.match(error.stdout, /Status: ERROR/);
+      assert.match(error.stdout, /No draft text provided\./);
+      return true;
+    }
+  );
 });

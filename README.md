@@ -29,6 +29,7 @@ The first use case is simple:
 npm install
 npm run demo
 npm start -- guardrails
+npm start -- review --text "I earned instant passive income with one prompt"
 npm start -- version
 ```
 
@@ -37,6 +38,7 @@ Or run directly:
 ```bash
 node src/cli.js demo
 node src/cli.js guardrails
+node src/cli.js review --text "I earned instant passive income with one prompt"
 node src/cli.js version
 ```
 
@@ -62,6 +64,7 @@ Decide what the tool must save or produce before paying。
 ```bash
 node src/cli.js demo
 node src/cli.js guardrails
+node src/cli.js review --text "..."
 node src/cli.js version
 node src/cli.js log
 node src/cli.js post --topic "..." --lesson "..."
@@ -69,6 +72,7 @@ node src/cli.js note --topic "..." --lesson "..."
 ```
 
 `guardrails` prints the safety constraints by themselves so they can be reviewed or reused in another local workflow.
+`review` runs a lightweight local check against obvious risky claims before a human approves the draft for posting or publishing.
 `version` prints the current CLI package version so releases and bug reports can reference the exact installed build.
 
 ## Project Principles
