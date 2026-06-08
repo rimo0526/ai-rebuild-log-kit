@@ -51,12 +51,12 @@ node src/cli.js post --topic "AI subscription cost" --lesson "Decide what the to
 Output:
 
 ```text
-AI subscription costについて書いてみて分かったこと。
+AI subscription costについて書いてみて思ったこと。
 
-勢いだけで決めると、後から苦しくなります。
-Decide what the tool must save or produce before paying。
+勢いだけで増やすと、あとから苦しくなります。
+Decide what the tool must save or produce before paying.
 
-派手な話より先に、まずは小さく続けられる仕組みを作ります。
+派手な話より先に、まずは小さく続けられる形に戻します。
 ```
 
 ## Commands

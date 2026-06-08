@@ -4,13 +4,13 @@ import { dailyLogTemplate, guardrails, noteOutlineTemplate, reviewDraft, xPostTe
 
 test("xPostTemplate includes topic, lesson, and human tone", () => {
   const draft = xPostTemplate({
-    topic: "AIに課金して",
-    lesson: "先に用途を決める"
+    topic: "AIに課金しすぎた話",
+    lesson: "使う前に用途を決める"
   });
 
-  assert.match(draft, /AIに課金して/);
-  assert.match(draft, /先に用途を決める/);
-  assert.match(draft, /小さく続けられる仕組み/);
+  assert.match(draft, /AIに課金しすぎた話/);
+  assert.match(draft, /使う前に用途を決める/);
+  assert.match(draft, /まずは小さく続けられる形に戻します/);
 });
 
 test("dailyLogTemplate provides rebuilding fields", () => {
@@ -23,12 +23,12 @@ test("dailyLogTemplate provides rebuilding fields", () => {
 
 test("noteOutlineTemplate produces a reusable outline", () => {
   const outline = noteOutlineTemplate({
-    topic: "家計の見直し",
-    lesson: "固定費から見る"
+    topic: "家計を立て直す過程",
+    lesson: "記録を残すと次の判断が軽くなる"
   });
 
-  assert.match(outline, /家計の見直し/);
-  assert.match(outline, /固定費から見る/);
+  assert.match(outline, /家計を立て直す過程/);
+  assert.match(outline, /記録を残すと次の判断が軽くなる/);
   assert.match(outline, /次に試すこと/);
 });
 

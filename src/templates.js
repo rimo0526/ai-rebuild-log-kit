@@ -55,29 +55,29 @@ export function dailyLogTemplate() {
 }
 
 export function xPostTemplate({ topic, lesson }) {
-  const safeTopic = topic || "AIで生活を立て直すこと";
-  const safeLesson = lesson || "先に用途と成果物を決める";
+  const safeTopic = topic || "AIで生活を立て直そうとして思うこと";
+  const safeLesson = lesson || "使う前に用途と検証方法を決める";
 
   return [
-    `${safeTopic}について書いてみて分かったこと。`,
+    `${safeTopic}について書いてみて思ったこと。`,
     "",
-    "勢いだけで決めると、後から苦しくなります。",
+    "勢いだけで増やすと、あとから苦しくなります。",
     `${safeLesson}。`,
     "",
-    "派手な話より先に、まずは小さく続けられる仕組みを作ります。"
+    "派手な話より先に、まずは小さく続けられる形に戻します。"
   ].join("\n");
 }
 
 export function noteOutlineTemplate({ topic, lesson }) {
   const safeTopic = topic || "AIで生活再建を進めること";
-  const safeLesson = lesson || "試して、記録して、判断する";
+  const safeLesson = lesson || "試して、記録して、次に活かす";
 
   return [
     `# ${safeTopic}で分かったこと`,
     "",
     "## 1. 最初に困っていたこと",
     "",
-    "## 2. 実際にやって変わったこと",
+    "## 2. 実際にやってみて変わったこと",
     "",
     "## 3. そこで学んだこと",
     `- ${safeLesson}`,
@@ -85,7 +85,7 @@ export function noteOutlineTemplate({ topic, lesson }) {
     "## 4. 次に試すこと",
     "",
     "## 5. まとめ",
-    "一発逆転ではなく、続けられる仕組みとして整理する。"
+    "一度に解決せず、続けられる形に戻す視点で整理する。"
   ].join("\n");
 }
 
