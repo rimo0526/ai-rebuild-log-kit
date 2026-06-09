@@ -33,6 +33,7 @@ function printHelp() {
     "  node src/cli.js post --topic \"...\" --lesson \"...\"",
     "  node src/cli.js note --topic \"...\" --lesson \"...\"",
     "  node src/cli.js review --text \"...\"",
+    "  node src/cli.js review --text \"...\" --json",
     "  node src/cli.js version",
     "",
     "This tool generates drafts only. Review before publishing."
@@ -50,6 +51,10 @@ function printReview(result) {
       console.log(`  - ${check.advice}`);
     }
   }
+}
+
+function printJson(value) {
+  console.log(JSON.stringify(value, null, 2));
 }
 
 function run() {
@@ -84,7 +89,11 @@ function run() {
 
   if (command === "review") {
     const result = reviewDraft(args.text);
-    printReview(result);
+    if (args.json) {
+      printJson(result);
+    } else {
+      printReview(result);
+    }
 
     if (result.status === "ERROR") {
       process.exitCode = 1;

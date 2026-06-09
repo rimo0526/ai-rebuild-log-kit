@@ -16,6 +16,7 @@ test("help output documents the guardrails command", async () => {
 
   assert.match(stdout, /node src\/cli\.js guardrails/);
   assert.match(stdout, /node src\/cli\.js review --text/);
+  assert.match(stdout, /node src\/cli\.js review --text "..." --json/);
   assert.match(stdout, /node src\/cli\.js version/);
   assert.match(stdout, /Review before publishing/);
 });
@@ -42,6 +43,15 @@ test("review command warns on obvious risky draft text", async () => {
   assert.match(stdout, /Avoid get-rich-quick framing/);
 });
 
+test("review command can print structured json", async () => {
+  const { stdout } = await runCli("review", "--text", "I wrote down one spending lesson.", "--json");
+  const review = JSON.parse(stdout);
+
+  assert.equal(review.status, "PASS");
+  assert.equal(review.summary, "No obvious guardrail issues found.");
+  assert.equal(Array.isArray(review.checks), true);
+});
+
 test("review command fails cleanly when text is missing", async () => {
   await assert.rejects(
     runCli("review"),
@@ -49,6 +59,19 @@ test("review command fails cleanly when text is missing", async () => {
       assert.equal(error.code, 1);
       assert.match(error.stdout, /Status: ERROR/);
       assert.match(error.stdout, /No draft text provided\./);
+      return true;
+    }
+  );
+});
+
+test("review json mode still exits non-zero on missing text", async () => {
+  await assert.rejects(
+    runCli("review", "--json"),
+    (error) => {
+      assert.equal(error.code, 1);
+      const review = JSON.parse(error.stdout);
+      assert.equal(review.status, "ERROR");
+      assert.equal(review.summary, "No draft text provided.");
       return true;
     }
   );
