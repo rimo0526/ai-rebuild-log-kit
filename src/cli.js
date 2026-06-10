@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { readFileSync } from "node:fs";
 import packageJson from "../package.json" with { type: "json" };
 import { dailyLogTemplate, guardrails, noteOutlineTemplate, reviewDraft, xPostTemplate } from "./templates.js";
 
@@ -33,6 +34,7 @@ function printHelp() {
     "  node src/cli.js post --topic \"...\" --lesson \"...\"",
     "  node src/cli.js note --topic \"...\" --lesson \"...\"",
     "  node src/cli.js review --text \"...\"",
+    "  node src/cli.js review --file ./draft.txt",
     "  node src/cli.js review --text \"...\" --json",
     "  node src/cli.js version",
     "",
@@ -55,6 +57,18 @@ function printReview(result) {
 
 function printJson(value) {
   console.log(JSON.stringify(value, null, 2));
+}
+
+function loadReviewText(args) {
+  if (typeof args.text === "string") {
+    return args.text;
+  }
+
+  if (typeof args.file === "string") {
+    return readFileSync(args.file, "utf8").replace(/^\uFEFF/, "");
+  }
+
+  return "";
 }
 
 function run() {
@@ -88,7 +102,30 @@ function run() {
   }
 
   if (command === "review") {
-    const result = reviewDraft(args.text);
+    let inputText = "";
+
+    try {
+      inputText = loadReviewText(args);
+    } catch (error) {
+      const result = {
+        status: "ERROR",
+        summary: `Could not read file: ${args.file}`,
+        warnings: [],
+        checks: []
+      };
+
+      if (args.json) {
+        printJson(result);
+      } else {
+        printReview(result);
+        console.log(`Details: ${error.message}`);
+      }
+
+      process.exitCode = 1;
+      return;
+    }
+
+    const result = reviewDraft(inputText);
     if (args.json) {
       printJson(result);
     } else {

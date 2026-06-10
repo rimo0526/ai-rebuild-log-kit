@@ -1,6 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { execFile } from "node:child_process";
+import { mkdtemp, writeFile } from "node:fs/promises";
+import { join } from "node:path";
+import { tmpdir } from "node:os";
 import { promisify } from "node:util";
 
 const execFileAsync = promisify(execFile);
@@ -16,6 +19,7 @@ test("help output documents the guardrails command", async () => {
 
   assert.match(stdout, /node src\/cli\.js guardrails/);
   assert.match(stdout, /node src\/cli\.js review --text/);
+  assert.match(stdout, /node src\/cli\.js review --file \.\/draft\.txt/);
   assert.match(stdout, /node src\/cli\.js review --text "..." --json/);
   assert.match(stdout, /node src\/cli\.js version/);
   assert.match(stdout, /Review before publishing/);
@@ -52,6 +56,18 @@ test("review command can print structured json", async () => {
   assert.equal(Array.isArray(review.checks), true);
 });
 
+test("review command can read a draft from file", async () => {
+  const tempDir = await mkdtemp(join(tmpdir(), "ai-rebuild-log-kit-"));
+  const draftPath = join(tempDir, "draft.txt");
+  await writeFile(draftPath, "\uFEFFThis earned instant passive income.", "utf8");
+
+  const { stdout } = await runCli("review", "--file", draftPath);
+
+  assert.match(stdout, /Status: WARN/);
+  assert.match(stdout, /Avoid invented income or results claims/);
+  assert.match(stdout, /Avoid get-rich-quick framing/);
+});
+
 test("review command fails cleanly when text is missing", async () => {
   await assert.rejects(
     runCli("review"),
@@ -59,6 +75,19 @@ test("review command fails cleanly when text is missing", async () => {
       assert.equal(error.code, 1);
       assert.match(error.stdout, /Status: ERROR/);
       assert.match(error.stdout, /No draft text provided\./);
+      return true;
+    }
+  );
+});
+
+test("review command reports file read errors in json mode", async () => {
+  await assert.rejects(
+    runCli("review", "--file", "missing-draft.txt", "--json"),
+    (error) => {
+      assert.equal(error.code, 1);
+      const review = JSON.parse(error.stdout);
+      assert.equal(review.status, "ERROR");
+      assert.equal(review.summary, "Could not read file: missing-draft.txt");
       return true;
     }
   );

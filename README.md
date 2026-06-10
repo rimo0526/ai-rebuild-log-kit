@@ -30,6 +30,7 @@ npm install
 npm run demo
 npm start -- guardrails
 npm start -- review --text "I earned instant passive income with one prompt"
+npm start -- review --file ./draft.txt
 npm start -- review --text "I earned instant passive income with one prompt" --json
 npm start -- version
 ```
@@ -40,6 +41,7 @@ Or run directly:
 node src/cli.js demo
 node src/cli.js guardrails
 node src/cli.js review --text "I earned instant passive income with one prompt"
+node src/cli.js review --file ./draft.txt
 node src/cli.js review --text "I earned instant passive income with one prompt" --json
 node src/cli.js version
 ```
@@ -47,18 +49,21 @@ node src/cli.js version
 ## Example
 
 ```bash
-node src/cli.js post --topic "AI subscription cost" --lesson "Decide what the tool must save or produce before paying"
+node src/cli.js review --file ./draft.txt
 ```
 
 Output:
 
 ```text
-AI subscription costについて書いてみて思ったこと。
+Status: WARN
+Summary: 2 review warning(s) found.
 
-勢いだけで増やすと、あとから苦しくなります。
-Decide what the tool must save or produce before paying.
-
-派手な話より先に、まずは小さく続けられる形に戻します。
+[WARN] Avoid invented income or results claims
+  - Remove or verify any claim about money, sales, or outcomes.
+[PASS] Avoid invented approval or endorsement claims
+[WARN] Avoid get-rich-quick framing
+  - Replace hype with a concrete, reviewable lesson.
+[PASS] Avoid shame-based advice
 ```
 
 ## Commands
@@ -67,6 +72,7 @@ Decide what the tool must save or produce before paying.
 node src/cli.js demo
 node src/cli.js guardrails
 node src/cli.js review --text "..."
+node src/cli.js review --file ./draft.txt
 node src/cli.js review --text "..." --json
 node src/cli.js version
 node src/cli.js log
@@ -76,6 +82,7 @@ node src/cli.js note --topic "..." --lesson "..."
 
 `guardrails` prints the safety constraints by themselves so they can be reviewed or reused in another local workflow.
 `review` runs a lightweight local check against obvious risky claims before a human approves the draft for posting or publishing.
+`review --file` reads a saved local draft file, strips an optional UTF-8 BOM, and reviews that content with the same guardrails.
 `review --json` prints the same review result as structured JSON so local scripts can consume it without parsing the human-readable report.
 `version` prints the current CLI package version so releases and bug reports can reference the exact installed build.
 
