@@ -35,6 +35,7 @@ function printHelp() {
     "  node src/cli.js note --topic \"...\" --lesson \"...\"",
     "  node src/cli.js review --text \"...\"",
     "  node src/cli.js review --file ./draft.txt",
+    "  node src/cli.js review --stdin",
     "  node src/cli.js review --text \"...\" --json",
     "  node src/cli.js version",
     "",
@@ -59,7 +60,17 @@ function printJson(value) {
   console.log(JSON.stringify(value, null, 2));
 }
 
-function loadReviewText(args) {
+async function readStdin() {
+  const chunks = [];
+
+  for await (const chunk of process.stdin) {
+    chunks.push(chunk);
+  }
+
+  return chunks.join("");
+}
+
+async function loadReviewText(args) {
   if (typeof args.text === "string") {
     return args.text;
   }
@@ -68,10 +79,14 @@ function loadReviewText(args) {
     return readFileSync(args.file, "utf8").replace(/^\uFEFF/, "");
   }
 
+  if (args.stdin) {
+    return readStdin();
+  }
+
   return "";
 }
 
-function run() {
+async function run() {
   const args = parseArgs(process.argv.slice(2));
   const command = args._[0] || "help";
 
@@ -105,7 +120,7 @@ function run() {
     let inputText = "";
 
     try {
-      inputText = loadReviewText(args);
+      inputText = await loadReviewText(args);
     } catch (error) {
       const result = {
         status: "ERROR",
@@ -159,4 +174,4 @@ function run() {
   process.exitCode = 1;
 }
 
-run();
+await run();

@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { execFile } from "node:child_process";
+import { execFile, spawn } from "node:child_process";
 import { mkdtemp, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
@@ -8,25 +8,66 @@ import { promisify } from "node:util";
 
 const execFileAsync = promisify(execFile);
 
-async function runCli(...args) {
+async function runCli(args, options = {}) {
+  const { input, ...execOptions } = options;
+
+  if (typeof input === "string") {
+    return new Promise((resolve, reject) => {
+      const child = spawn(process.execPath, ["src/cli.js", ...args], {
+        ...execOptions,
+        cwd: new URL("..", import.meta.url),
+        stdio: ["pipe", "pipe", "pipe"]
+      });
+
+      let stdout = "";
+      let stderr = "";
+
+      child.stdout.on("data", (chunk) => {
+        stdout += chunk;
+      });
+
+      child.stderr.on("data", (chunk) => {
+        stderr += chunk;
+      });
+
+      child.on("error", reject);
+      child.on("close", (code) => {
+        if (code === 0) {
+          resolve({ stdout, stderr });
+          return;
+        }
+
+        const error = new Error(`Command failed: ${args.join(" ")}`);
+        error.code = code;
+        error.stdout = stdout;
+        error.stderr = stderr;
+        reject(error);
+      });
+
+      child.stdin.end(input);
+    });
+  }
+
   return execFileAsync(process.execPath, ["src/cli.js", ...args], {
+    ...execOptions,
     cwd: new URL("..", import.meta.url)
   });
 }
 
 test("help output documents the guardrails command", async () => {
-  const { stdout } = await runCli("help");
+  const { stdout } = await runCli(["help"]);
 
   assert.match(stdout, /node src\/cli\.js guardrails/);
   assert.match(stdout, /node src\/cli\.js review --text/);
   assert.match(stdout, /node src\/cli\.js review --file \.\/draft\.txt/);
+  assert.match(stdout, /node src\/cli\.js review --stdin/);
   assert.match(stdout, /node src\/cli\.js review --text "..." --json/);
   assert.match(stdout, /node src\/cli\.js version/);
   assert.match(stdout, /Review before publishing/);
 });
 
 test("guardrails command prints every guardrail", async () => {
-  const { stdout } = await runCli("guardrails");
+  const { stdout } = await runCli(["guardrails"]);
 
   assert.match(stdout, /Do not invent income, product results, or approval status\./);
   assert.match(stdout, /Do not use get-rich-quick framing\./);
@@ -34,13 +75,13 @@ test("guardrails command prints every guardrail", async () => {
 });
 
 test("version command prints the package version", async () => {
-  const { stdout } = await runCli("version");
+  const { stdout } = await runCli(["version"]);
 
   assert.equal(stdout.trim(), "0.1.0");
 });
 
 test("review command warns on obvious risky draft text", async () => {
-  const { stdout } = await runCli("review", "--text", "This earned instant passive income.");
+  const { stdout } = await runCli(["review", "--text", "This earned instant passive income."]);
 
   assert.match(stdout, /Status: WARN/);
   assert.match(stdout, /Avoid invented income or results claims/);
@@ -48,7 +89,7 @@ test("review command warns on obvious risky draft text", async () => {
 });
 
 test("review command can print structured json", async () => {
-  const { stdout } = await runCli("review", "--text", "I wrote down one spending lesson.", "--json");
+  const { stdout } = await runCli(["review", "--text", "I wrote down one spending lesson.", "--json"]);
   const review = JSON.parse(stdout);
 
   assert.equal(review.status, "PASS");
@@ -61,7 +102,17 @@ test("review command can read a draft from file", async () => {
   const draftPath = join(tempDir, "draft.txt");
   await writeFile(draftPath, "\uFEFFThis earned instant passive income.", "utf8");
 
-  const { stdout } = await runCli("review", "--file", draftPath);
+  const { stdout } = await runCli(["review", "--file", draftPath]);
+
+  assert.match(stdout, /Status: WARN/);
+  assert.match(stdout, /Avoid invented income or results claims/);
+  assert.match(stdout, /Avoid get-rich-quick framing/);
+});
+
+test("review command can read a draft from stdin", async () => {
+  const { stdout } = await runCli(["review", "--stdin"], {
+    input: "This earned instant passive income."
+  });
 
   assert.match(stdout, /Status: WARN/);
   assert.match(stdout, /Avoid invented income or results claims/);
@@ -70,7 +121,7 @@ test("review command can read a draft from file", async () => {
 
 test("review command fails cleanly when text is missing", async () => {
   await assert.rejects(
-    runCli("review"),
+    runCli(["review"]),
     (error) => {
       assert.equal(error.code, 1);
       assert.match(error.stdout, /Status: ERROR/);
@@ -82,7 +133,7 @@ test("review command fails cleanly when text is missing", async () => {
 
 test("review command reports file read errors in json mode", async () => {
   await assert.rejects(
-    runCli("review", "--file", "missing-draft.txt", "--json"),
+    runCli(["review", "--file", "missing-draft.txt", "--json"]),
     (error) => {
       assert.equal(error.code, 1);
       const review = JSON.parse(error.stdout);
@@ -95,7 +146,7 @@ test("review command reports file read errors in json mode", async () => {
 
 test("review json mode still exits non-zero on missing text", async () => {
   await assert.rejects(
-    runCli("review", "--json"),
+    runCli(["review", "--json"]),
     (error) => {
       assert.equal(error.code, 1);
       const review = JSON.parse(error.stdout);

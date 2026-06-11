@@ -31,6 +31,7 @@ npm run demo
 npm start -- guardrails
 npm start -- review --text "I earned instant passive income with one prompt"
 npm start -- review --file ./draft.txt
+npm start -- review --stdin
 npm start -- review --text "I earned instant passive income with one prompt" --json
 npm start -- version
 ```
@@ -42,8 +43,15 @@ node src/cli.js demo
 node src/cli.js guardrails
 node src/cli.js review --text "I earned instant passive income with one prompt"
 node src/cli.js review --file ./draft.txt
+node src/cli.js review --stdin
 node src/cli.js review --text "I earned instant passive income with one prompt" --json
 node src/cli.js version
+```
+
+Pipe saved or generated drafts into the reviewer:
+
+```bash
+cat draft.txt | node src/cli.js review --stdin
 ```
 
 ## Example
@@ -73,6 +81,7 @@ node src/cli.js demo
 node src/cli.js guardrails
 node src/cli.js review --text "..."
 node src/cli.js review --file ./draft.txt
+node src/cli.js review --stdin
 node src/cli.js review --text "..." --json
 node src/cli.js version
 node src/cli.js log
@@ -83,6 +92,7 @@ node src/cli.js note --topic "..." --lesson "..."
 `guardrails` prints the safety constraints by themselves so they can be reviewed or reused in another local workflow.
 `review` runs a lightweight local check against obvious risky claims before a human approves the draft for posting or publishing.
 `review --file` reads a saved local draft file, strips an optional UTF-8 BOM, and reviews that content with the same guardrails.
+`review --stdin` reads piped draft text from standard input so other local scripts can send content directly into the same review flow.
 `review --json` prints the same review result as structured JSON so local scripts can consume it without parsing the human-readable report.
 `version` prints the current CLI package version so releases and bug reports can reference the exact installed build.
 
