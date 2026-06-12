@@ -61,6 +61,7 @@ test("help output documents the guardrails command", async () => {
   assert.match(stdout, /node src\/cli\.js review --text/);
   assert.match(stdout, /node src\/cli\.js review --file \.\/draft\.txt/);
   assert.match(stdout, /node src\/cli\.js review --stdin/);
+  assert.match(stdout, /node src\/cli\.js review --text "..." --strict/);
   assert.match(stdout, /node src\/cli\.js review --text "..." --json/);
   assert.match(stdout, /node src\/cli\.js version/);
   assert.match(stdout, /Review before publishing/);
@@ -95,6 +96,31 @@ test("review command can print structured json", async () => {
   assert.equal(review.status, "PASS");
   assert.equal(review.summary, "No obvious guardrail issues found.");
   assert.equal(Array.isArray(review.checks), true);
+});
+
+test("review strict mode exits non-zero on warnings", async () => {
+  await assert.rejects(
+    runCli(["review", "--text", "This earned instant passive income.", "--strict"]),
+    (error) => {
+      assert.equal(error.code, 1);
+      assert.match(error.stdout, /Status: WARN/);
+      assert.match(error.stdout, /Avoid get-rich-quick framing/);
+      return true;
+    }
+  );
+});
+
+test("review strict json mode exits non-zero on warnings", async () => {
+  await assert.rejects(
+    runCli(["review", "--text", "This earned instant passive income.", "--strict", "--json"]),
+    (error) => {
+      assert.equal(error.code, 1);
+      const review = JSON.parse(error.stdout);
+      assert.equal(review.status, "WARN");
+      assert.equal(review.summary, "2 review warning(s) found.");
+      return true;
+    }
+  );
 });
 
 test("review command can read a draft from file", async () => {

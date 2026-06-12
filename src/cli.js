@@ -36,6 +36,7 @@ function printHelp() {
     "  node src/cli.js review --text \"...\"",
     "  node src/cli.js review --file ./draft.txt",
     "  node src/cli.js review --stdin",
+    "  node src/cli.js review --text \"...\" --strict",
     "  node src/cli.js review --text \"...\" --json",
     "  node src/cli.js version",
     "",
@@ -147,7 +148,7 @@ async function run() {
       printReview(result);
     }
 
-    if (result.status === "ERROR") {
+    if (result.status === "ERROR" || (args.strict && result.status === "WARN")) {
       process.exitCode = 1;
     }
 
