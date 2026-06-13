@@ -76,6 +76,19 @@ Summary: 2 review warning(s) found.
 [PASS] Avoid shame-based advice
 ```
 
+Demo output now includes readable Japanese starter copy for the built-in draft templates:
+
+```text
+## X Post Draft
+
+AIとの家計立て直しで気づいたことについて書いてみて思ったこと。
+
+派手な近道を探すより、あとから見返せる形にする方が続きました。
+使う前に、そのツールで何を残すか決める。
+
+大きな話より先に、まずは今日の小さな変化をログに残します。
+```
+
 ## Commands
 
 ```bash

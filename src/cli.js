@@ -104,8 +104,8 @@ async function run() {
   if (command === "demo") {
     console.log("## X Post Draft\n");
     console.log(xPostTemplate({
-      topic: "AIへの課金を見直した話",
-      lesson: "払う前に、そのツールで何を残すか決める"
+      topic: "AIとの家計立て直しで気づいたこと",
+      lesson: "使う前に、そのツールで何を残すか決める"
     }));
     console.log("\n## Guardrails\n");
     console.log(guardrails.map((item) => `- ${item}`).join("\n"));
