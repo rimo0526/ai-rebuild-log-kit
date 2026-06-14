@@ -131,6 +131,17 @@ This repository is intended to be maintained as a small public toolkit. Codex ca
 - maintaining release notes
 - documenting new workflows
 
+## Development
+
+Use the built-in checks before opening a PR or cutting a release:
+
+```bash
+npm test
+node src/cli.js demo
+```
+
+`npm test` runs the CLI and template regression tests. The `demo` command is a quick smoke check for the shipped starter copy and the printed guardrails.
+
 ## License
 
 MIT

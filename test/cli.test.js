@@ -81,6 +81,15 @@ test("version command prints the package version", async () => {
   assert.equal(stdout.trim(), "0.1.0");
 });
 
+test("demo command prints readable Japanese starter copy", async () => {
+  const { stdout } = await runCli(["demo"]);
+
+  assert.match(stdout, /## X Post Draft/);
+  assert.match(stdout, /AIとの家計立て直しで気づいたことについて書いてみて思ったこと。/);
+  assert.match(stdout, /使う前に、そのツールで何を残すか決める。/);
+  assert.match(stdout, /## Guardrails/);
+});
+
 test("review command warns on obvious risky draft text", async () => {
   const { stdout } = await runCli(["review", "--text", "This earned instant passive income."]);
 
