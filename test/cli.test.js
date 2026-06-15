@@ -71,6 +71,7 @@ test("guardrails command prints every guardrail", async () => {
   const { stdout } = await runCli(["guardrails"]);
 
   assert.match(stdout, /Do not invent income, product results, or approval status\./);
+  assert.match(stdout, /Do not invent virality, follower growth, or reach claims\./);
   assert.match(stdout, /Do not use get-rich-quick framing\./);
   assert.match(stdout, /Keep the final draft reviewable by a human\./);
 });
@@ -95,6 +96,14 @@ test("review command warns on obvious risky draft text", async () => {
 
   assert.match(stdout, /Status: WARN/);
   assert.match(stdout, /Avoid invented income or results claims/);
+  assert.match(stdout, /Avoid get-rich-quick framing/);
+});
+
+test("review command warns on invented virality claims", async () => {
+  const { stdout } = await runCli(["review", "--text", "This post went viral and gained 10,000 followers overnight."]);
+
+  assert.match(stdout, /Status: WARN/);
+  assert.match(stdout, /Avoid invented virality or audience growth claims/);
   assert.match(stdout, /Avoid get-rich-quick framing/);
 });
 

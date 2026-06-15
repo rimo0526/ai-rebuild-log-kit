@@ -22,6 +22,7 @@ The first use case is simple:
 - Note/article outline generator
 - Safety guardrails for claims and tone
 - Local-only CLI with no account connection
+- Review checks for fabricated virality and audience-growth claims
 
 ## Quick Start
 
@@ -71,6 +72,7 @@ Summary: 2 review warning(s) found.
 [WARN] Avoid invented income or results claims
   - Remove or verify any claim about money, sales, or outcomes.
 [PASS] Avoid invented approval or endorsement claims
+[PASS] Avoid invented virality or audience growth claims
 [WARN] Avoid get-rich-quick framing
   - Replace hype with a concrete, reviewable lesson.
 [PASS] Avoid shame-based advice
@@ -111,6 +113,7 @@ node src/cli.js note --topic "..." --lesson "..."
 `review --stdin` reads piped draft text from standard input so other local scripts can send content directly into the same review flow.
 `review --strict` exits with code `1` when the draft is `WARN` or `ERROR`, which makes the same local review usable in pre-commit hooks or CI checks.
 `review --json` prints the same review result as structured JSON so local scripts can consume it without parsing the human-readable report.
+The review checks now also flag unverified virality, follower-growth, and reach claims so public examples stay honest about audience outcomes.
 `version` prints the current CLI package version so releases and bug reports can reference the exact installed build.
 
 ## Project Principles

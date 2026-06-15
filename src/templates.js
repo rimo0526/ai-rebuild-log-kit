@@ -1,5 +1,6 @@
 export const guardrails = [
   "Do not invent income, product results, or approval status.",
+  "Do not invent virality, follower growth, or reach claims.",
   "Do not use get-rich-quick framing.",
   "Do not shame the reader.",
   "Prefer concrete lessons over vague motivation.",
@@ -18,6 +19,12 @@ const reviewChecks = [
     label: "Avoid invented approval or endorsement claims",
     pattern: /\b(approved|approval|endorsed|certified|officially accepted)\b/i,
     advice: "Do not imply approval unless you can verify it."
+  },
+  {
+    id: "virality-claims",
+    label: "Avoid invented virality or audience growth claims",
+    pattern: /\b(viral|went viral|blew up|followers?|subscribers?|reach|impressions?)\b/i,
+    advice: "Remove or verify claims about audience growth, reach, or virality."
   },
   {
     id: "get-rich-quick",

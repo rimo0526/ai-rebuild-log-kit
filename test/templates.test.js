@@ -48,6 +48,7 @@ test("noteOutlineTemplate fallback copy stays readable in Japanese", () => {
 
 test("guardrails discourage unsafe growth claims", () => {
   assert.ok(guardrails.some((item) => item.includes("Do not invent income")));
+  assert.ok(guardrails.some((item) => item.includes("Do not invent virality")));
   assert.ok(guardrails.some((item) => item.includes("get-rich-quick")));
 });
 
@@ -57,6 +58,14 @@ test("reviewDraft flags obvious risky claims", () => {
   assert.equal(review.status, "WARN");
   assert.match(review.summary, /warning/);
   assert.ok(review.warnings.some((warning) => warning.id === "income-claims"));
+  assert.ok(review.warnings.some((warning) => warning.id === "get-rich-quick"));
+});
+
+test("reviewDraft flags invented virality claims", () => {
+  const review = reviewDraft("This note went viral and gained 10,000 followers overnight.");
+
+  assert.equal(review.status, "WARN");
+  assert.ok(review.warnings.some((warning) => warning.id === "virality-claims"));
   assert.ok(review.warnings.some((warning) => warning.id === "get-rich-quick"));
 });
 
