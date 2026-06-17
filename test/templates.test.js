@@ -4,20 +4,20 @@ import { dailyLogTemplate, guardrails, noteOutlineTemplate, reviewDraft, xPostTe
 
 test("xPostTemplate includes topic, lesson, and human tone", () => {
   const draft = xPostTemplate({
-    topic: "AIとの振り返りで見えた失敗",
-    lesson: "使う前に記録方法を決める"
+    topic: "AIとの節約メモづくりで見えた失敗",
+    lesson: "使い回す前に検証手順を整える"
   });
 
-  assert.match(draft, /AIとの振り返りで見えた失敗/);
-  assert.match(draft, /使う前に記録方法を決める/);
-  assert.match(draft, /まずは今日の小さな変化をログに残します。/);
+  assert.match(draft, /AIとの節約メモづくりで見えた失敗/);
+  assert.match(draft, /使い回す前に検証手順を整える/);
+  assert.match(draft, /大きな話より先に、まずは今日の小さな改善をログに残します。/);
 });
 
 test("xPostTemplate fallback copy stays readable in Japanese", () => {
   const draft = xPostTemplate({});
 
-  assert.match(draft, /AIで生活を立て直そうとして気づいたことについて書いてみて思ったこと。/);
-  assert.match(draft, /使う前に用途と記録方法を決める。/);
+  assert.match(draft, /AIで生活を立て直そうとして失敗したことについて書いてみて思ったこと。/);
+  assert.match(draft, /使い回しより運用と検証の手順を整える。/);
 });
 
 test("dailyLogTemplate provides rebuilding fields", () => {
@@ -30,19 +30,19 @@ test("dailyLogTemplate provides rebuilding fields", () => {
 
 test("noteOutlineTemplate produces a reusable outline", () => {
   const outline = noteOutlineTemplate({
-    topic: "家計の立て直しで試したこと",
-    lesson: "試して、分解して、次に活かす"
+    topic: "再建メモを続けて分かったこと",
+    lesson: "試して、記録して、次に活かす"
   });
 
-  assert.match(outline, /家計の立て直しで試したこと/);
-  assert.match(outline, /試して、分解して、次に活かす/);
+  assert.match(outline, /再建メモを続けて分かったこと/);
+  assert.match(outline, /試して、記録して、次に活かす/);
   assert.match(outline, /## 4\./);
 });
 
 test("noteOutlineTemplate fallback copy stays readable in Japanese", () => {
   const outline = noteOutlineTemplate({});
 
-  assert.match(outline, /AIで生活を立て直すときに考えたことで分かったこと/);
+  assert.match(outline, /AIで生活を立て直そうとして気づいたことで分かったこと/);
   assert.match(outline, /試して、記録して、次に活かす/);
 });
 

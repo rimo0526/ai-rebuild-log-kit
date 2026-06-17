@@ -86,8 +86,8 @@ test("demo command prints readable Japanese starter copy", async () => {
   const { stdout } = await runCli(["demo"]);
 
   assert.match(stdout, /## X Post Draft/);
-  assert.match(stdout, /AIとの家計立て直しで気づいたことについて書いてみて思ったこと。/);
-  assert.match(stdout, /使う前に、そのツールで何を残すか決める。/);
+  assert.match(stdout, /AIとの家計再建で苦戦していたことについて書いてみて思ったこと。/);
+  assert.match(stdout, /使い回す前に、そのメモを検証できる形に戻す。/);
   assert.match(stdout, /## Guardrails/);
 });
 

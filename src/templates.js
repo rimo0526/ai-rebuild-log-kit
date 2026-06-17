@@ -62,21 +62,21 @@ export function dailyLogTemplate() {
 }
 
 export function xPostTemplate({ topic, lesson }) {
-  const safeTopic = topic || "AIで生活を立て直そうとして気づいたこと";
-  const safeLesson = lesson || "使う前に用途と記録方法を決める";
+  const safeTopic = topic || "AIで生活を立て直そうとして失敗したこと";
+  const safeLesson = lesson || "使い回しより運用と検証の手順を整える";
 
   return [
     `${safeTopic}について書いてみて思ったこと。`,
     "",
-    "派手な近道を探すより、あとから見返せる形にする方が続きました。",
+    "完璧な近道を探すより、あとから検証できる形にする方が長く続きました。",
     `${safeLesson}。`,
     "",
-    "大きな話より先に、まずは今日の小さな変化をログに残します。"
+    "大きな話より先に、まずは今日の小さな改善をログに残します。"
   ].join("\n");
 }
 
 export function noteOutlineTemplate({ topic, lesson }) {
-  const safeTopic = topic || "AIで生活を立て直すときに考えたこと";
+  const safeTopic = topic || "AIで生活を立て直そうとして気づいたこと";
   const safeLesson = lesson || "試して、記録して、次に活かす";
 
   return [
@@ -92,7 +92,7 @@ export function noteOutlineTemplate({ topic, lesson }) {
     "## 4. 次に試すこと",
     "",
     "## 5. まとめ",
-    "一度に解決せず、分解して続けられる形に戻す。"
+    "一度に解決せず、記録して積み上げる形に戻す。"
   ].join("\n");
 }
 
